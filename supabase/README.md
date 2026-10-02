@@ -17,7 +17,10 @@ Placeholder values in `.env.example` only document the variable names. They do n
 Run these files in the Supabase SQL Editor, in order:
 
 1. `supabase/migrations/20261002000100_phase1_foundation.sql`
-2. `supabase/seed.sql`
+2. `supabase/migrations/20261002000200_phase2_activity_notifications.sql`
+3. `supabase/seed.sql`
+
+If the foundation and seed are already installed, apply only the new Phase 2 migration; do not rerun the foundation migration.
 
 Then create the first Auth user in **Authentication → Users**. Run `supabase/bootstrap_first_admin.sql` after replacing `REPLACE_WITH_ADMIN_EMAIL` with that user’s exact email. This grants the first `institution_admin` profile for the seeded pilot institution. Keep this bootstrap script restricted to trusted project owners; normal role assignment happens through authenticated admin invitations.
 
@@ -31,5 +34,6 @@ If an invitation expires and sending it again reports that the email is already 
 - Authenticated users read only their institution’s records; students and faculty see their own bookings, while campus staff share operational visibility and actions.
 - Booking and maintenance schedule writes go through database functions. A Postgres exclusion constraint prevents overlapping active time blocks, including concurrent requests.
 - The app does not let users choose their own role. Campus admins select the role when inviting a user.
+- Booking, approval, resource, and maintenance changes are recorded in an institution-scoped activity log. Booking status changes create in-app notifications for the requester and, for pending requests, campus staff. Users can read only their own notifications and mark them read.
 
 The SQL has not been run against a live project in this workspace. Once real project values are configured, apply the SQL and verify sign-in, RLS, invitation redirects, and concurrent booking behavior against that project.

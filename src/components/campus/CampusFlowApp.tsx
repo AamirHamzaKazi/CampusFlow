@@ -140,10 +140,43 @@ export default function CampusFlowApp({ profile, institutionName, initialSnapsho
   }, [initialSnapshot]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
+  useEffect(() => {
+    let stopped = false;
+    const refreshNotifications = async () => {
+      if (document.visibilityState !== 'visible') return;
+      try {
+        const response = await fetch('/api/notifications', { cache: 'no-store' });
+        if (!response.ok) return;
+        const result = await response.json() as { notifications?: CampusNotification[] };
+        if (!stopped && Array.isArray(result.notifications)) setNotifications(result.notifications);
+      } catch {
+        // Keep the last known notifications during a temporary network issue.
+      }
+    };
+    const interval = window.setInterval(() => void refreshNotifications(), 30_000);
+    return () => { stopped = true; window.clearInterval(interval); };
+  }, []);
+
+  useEffect(() => {
+    if (activeTab !== 'activity') return;
+    const interval = window.setInterval(() => router.refresh(), 30_000);
+    return () => window.clearInterval(interval);
+  }, [activeTab, router]);
+
   const showToast = (title: string, description: string, type: 'success' | 'warning' | 'error' | 'info' = 'success') => {
     const id = `${Date.now()}-${Math.random()}`;
     setToast({ id, title, description, type });
     window.setTimeout(() => setToast((current) => current?.id === id ? null : current), 4200);
+  };
+
+  const handleMarkNotificationsRead = async () => {
+    try {
+      const response = await fetch('/api/notifications', { method: 'PATCH' });
+      if (!response.ok) throw new Error('Notifications could not be marked as read.');
+      setNotifications((current) => current.map((item) => ({ ...item, read: true })));
+    } catch {
+      showToast('Could not update notifications', 'Please try again in a moment.', 'error');
+    }
   };
 
   const mutate = async (path: string, method: 'POST' | 'PATCH' | 'DELETE', body?: Record<string, unknown>) => {
@@ -227,7 +260,7 @@ export default function CampusFlowApp({ profile, institutionName, initialSnapsho
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <Navbar currentRole={currentRole} currentUserName={profile.fullName} institutionName={institutionName} onOpenQuickSearch={() => setIsQuickSearchOpen(true)} notifications={notifications} onMarkNotificationsRead={() => setNotifications((current) => current.map((item) => ({ ...item, read: true })))} />
+      <Navbar currentRole={currentRole} currentUserName={profile.fullName} institutionName={institutionName} onOpenQuickSearch={() => setIsQuickSearchOpen(true)} notifications={notifications} onMarkNotificationsRead={() => void handleMarkNotificationsRead()} />
       <div className="flex min-h-0 flex-1 flex-col xl:flex-row">
         <Sidebar activeTab={activeTab} onSelectTab={setActiveTab} pendingCount={pendingCount} currentRole={currentRole} resourceCount={resources.length} />
         <main className="min-w-0 flex-1 overflow-y-auto px-4 py-5 pb-24 sm:px-6 lg:px-8 lg:py-8 lg:pb-8">

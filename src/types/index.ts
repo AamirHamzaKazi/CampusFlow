@@ -115,10 +115,10 @@ export interface AuditLogEntry {
   timestamp: string;
   actor: string;
   actorRole: Role;
-  action: 'LOCK_ACQUIRED' | 'CONFLICT_PREVENTED' | 'BOOKING_CREATED' | 'APPROVAL_GRANTED' | 'QR_CHECKIN' | 'MAINTENANCE_SCHEDULED';
+  action: 'LOCK_ACQUIRED' | 'CONFLICT_PREVENTED' | 'BOOKING_CREATED' | 'BOOKING_REQUESTED' | 'APPROVAL_GRANTED' | 'BOOKING_REJECTED' | 'BOOKING_CANCELLED' | 'RESOURCE_CREATED' | 'RESOURCE_UPDATED' | 'QR_CHECKIN' | 'MAINTENANCE_SCHEDULED' | 'MAINTENANCE_CANCELLED';
   resourceName: string;
   details: string;
-  transactionHash: string;
+  eventId: string;
 }
 
 export interface AnalyticsSnapshot {

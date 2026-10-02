@@ -74,8 +74,8 @@ export function getInitialCampusSnapshot(): CampusSnapshot {
       },
     ],
     auditLogs: [
-      { id: 'demo-log-1', timestamp: 'Oct 1, 9:30 AM', actor: 'Aamir Kazi', actorRole: 'student', action: 'LOCK_ACQUIRED', resourceName: 'Seminar Room B (Executive)', details: 'Booking request submitted for Oct 3, 2:00–4:00 PM.', transactionHash: 'demo-event-001' },
-      { id: 'demo-log-2', timestamp: 'Sep 30, 12:15 PM', actor: 'Aamir Kazi', actorRole: 'student', action: 'BOOKING_CREATED', resourceName: 'Study Pod Alpha (Quiet Room)', details: 'Booking confirmed for Oct 5, 10:00 AM–12:00 PM.', transactionHash: 'demo-event-002' },
+      { id: 'demo-log-1', timestamp: 'Oct 1, 9:30 AM', actor: 'Aamir Kazi', actorRole: 'student', action: 'LOCK_ACQUIRED', resourceName: 'Seminar Room B (Executive)', details: 'Booking request submitted for Oct 3, 2:00–4:00 PM.', eventId: 'demo-event-001' },
+      { id: 'demo-log-2', timestamp: 'Sep 30, 12:15 PM', actor: 'Aamir Kazi', actorRole: 'student', action: 'BOOKING_CREATED', resourceName: 'Study Pod Alpha (Quiet Room)', details: 'Booking confirmed for Oct 5, 10:00 AM–12:00 PM.', eventId: 'demo-event-002' },
     ],
     notifications: [
       { id: 'notif-1', title: 'Request submitted', description: 'Design Review with Project Team is waiting for staff approval.', createdAt: '2026-10-01T09:30:00Z', read: false, kind: 'booking' },

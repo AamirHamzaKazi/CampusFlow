@@ -4,10 +4,6 @@ import React, { useState } from 'react';
 import { AuditLogEntry } from '@/types';
 import { 
   Terminal as TerminalIcon, 
-  ShieldCheck, 
-  Lock, 
-  CheckCircle2, 
-  Wrench, 
   RotateCcw,
   Copy,
   Check
@@ -38,11 +34,20 @@ export const AuditTerminal: React.FC<AuditTerminalProps> = ({
         return 'text-amber-700 bg-amber-50 border-amber-200';
       case 'BOOKING_CREATED':
         return 'text-emerald-700 bg-emerald-50 border-emerald-200';
+      case 'BOOKING_REQUESTED':
+        return 'text-amber-700 bg-amber-50 border-amber-200';
       case 'APPROVAL_GRANTED':
         return 'text-purple-700 bg-purple-50 border-purple-200';
+      case 'BOOKING_REJECTED':
+      case 'BOOKING_CANCELLED':
+        return 'text-rose-700 bg-rose-50 border-rose-200';
+      case 'RESOURCE_CREATED':
+      case 'RESOURCE_UPDATED':
+        return 'text-blue-700 bg-blue-50 border-blue-200';
       case 'QR_CHECKIN':
         return 'text-cyan-700 bg-cyan-50 border-cyan-200';
       case 'MAINTENANCE_SCHEDULED':
+      case 'MAINTENANCE_CANCELLED':
         return 'text-zinc-700 bg-zinc-100 border-zinc-200';
       default:
         return 'text-zinc-700 bg-zinc-100 border-zinc-200';
@@ -56,13 +61,13 @@ export const AuditTerminal: React.FC<AuditTerminalProps> = ({
         <div>
           <div className="flex items-center gap-2">
             <TerminalIcon className="w-4 h-4 text-foreground" />
-            <h2 className="text-sm font-bold text-foreground">Engine Transaction & ACID Audit Stream</h2>
+            <h2 className="text-sm font-bold text-foreground">Campus Activity Audit Log</h2>
             <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-muted text-foreground border border-border font-semibold">
-              ACID GUARANTEED
+              DATABASE RECORDED
             </span>
           </div>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Real-time record of pessimistic locking, constraint validations, and slot allocations.
+            Committed booking, approval, resource, and maintenance changes for your institution.
           </p>
         </div>
 
@@ -83,7 +88,7 @@ export const AuditTerminal: React.FC<AuditTerminalProps> = ({
             <div className="h-2.5 w-2.5 rounded-full bg-muted-foreground/40" />
             <div className="h-2.5 w-2.5 rounded-full bg-muted-foreground/60" />
             <div className="h-2.5 w-2.5 rounded-full bg-foreground/80" />
-            <span className="text-muted-foreground text-[11px] ml-2">campusflow audit stream</span>
+            <span className="text-muted-foreground text-[11px] ml-2">campusflow activity log</span>
           </div>
           <span className="text-muted-foreground text-[10px]">Isolation: SERIALIZABLE</span>
         </div>
@@ -105,13 +110,13 @@ export const AuditTerminal: React.FC<AuditTerminalProps> = ({
                 </div>
 
                 <div className="flex items-center gap-1.5">
-                  <span className="text-muted-foreground text-[10px]">{log.transactionHash}</span>
+                  <span className="text-muted-foreground text-[10px]">Event ID · {log.eventId}</span>
                   <button
-                    onClick={() => handleCopy(log.transactionHash)}
+                    onClick={() => handleCopy(log.eventId)}
                     className="p-1 rounded text-muted-foreground hover:text-foreground"
-                    title="Copy Tx Hash"
+                    title="Copy event ID"
                   >
-                    {copiedId === log.transactionHash ? (
+                    {copiedId === log.eventId ? (
                       <Check className="w-3 h-3 text-emerald-700" />
                     ) : (
                       <Copy className="w-3 h-3" />
@@ -126,7 +131,7 @@ export const AuditTerminal: React.FC<AuditTerminalProps> = ({
 
               <div className="text-[10px] text-muted-foreground flex items-center justify-between pt-0.5">
                 <span>Actor: {log.actor} ({log.actorRole})</span>
-                <span className="text-emerald-700">✓ Commit Verified</span>
+                <span className="text-emerald-700">✓ Saved</span>
               </div>
             </div>
           ))}

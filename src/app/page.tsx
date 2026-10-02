@@ -5,7 +5,7 @@ import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { getCurrentProfile } from '@/lib/supabase/profile';
 import { createClient } from '@/lib/supabase/server';
 import { CampusSnapshot } from '@/lib/demo-repository';
-import { Booking, MaintenanceWindow, Resource } from '@/types';
+import { AuditLogEntry, Booking, CampusNotification, MaintenanceWindow, Resource, Role } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
@@ -49,8 +49,10 @@ export default async function Home() {
   const resourcesQuery = await supabase.from('resources').select('*').order('name');
   const bookingsQuery = await supabase.from('bookings').select('*').order('booking_date').order('start_time');
   const maintenanceQuery = await supabase.from('maintenance_windows').select('*').order('maintenance_date').order('start_time');
-  const dataError = institutionQuery.error ?? resourcesQuery.error ?? bookingsQuery.error ?? maintenanceQuery.error;
-  if (dataError) return <SetupPanel title="Campus database needs setup" detail={`Supabase connected, but the CampusFlow schema could not be loaded (${dataError.message}). Apply the migration and resource seed, then refresh.`} />;
+  const activityQuery = await supabase.from('activity_logs').select('*').order('created_at', { ascending: false }).limit(100);
+  const notificationsQuery = await supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(20);
+  const dataError = institutionQuery.error ?? resourcesQuery.error ?? bookingsQuery.error ?? maintenanceQuery.error ?? activityQuery.error ?? notificationsQuery.error;
+  if (dataError) return <SetupPanel title="Campus database needs setup" detail={`Supabase connected, but the CampusFlow schema could not be loaded (${dataError.message}). Apply all SQL files in supabase/migrations in order, then run the resource seed and refresh.`} />;
 
   const institutionName = institutionQuery.data?.name ?? 'Campus workspace';
   const resources = (resourcesQuery.data ?? []).map((row): Resource => ({
@@ -121,6 +123,25 @@ export default async function Home() {
     status: row.status,
   }));
 
-  const initialSnapshot: CampusSnapshot = { resources, bookings, maintenance, auditLogs: [], notifications: [] };
+  const auditLogs = (activityQuery.data ?? []).map((row): AuditLogEntry => ({
+    id: row.id,
+    eventId: row.id,
+    timestamp: new Date(row.created_at).toLocaleString('en-IN'),
+    actor: row.actor_name,
+    actorRole: row.actor_role as Role,
+    action: row.action,
+    resourceName: row.resource_name,
+    details: row.details,
+  }));
+  const notifications = (notificationsQuery.data ?? []).map((row): CampusNotification => ({
+    id: row.id,
+    title: row.title,
+    description: row.description,
+    createdAt: row.created_at,
+    read: Boolean(row.read_at),
+    kind: row.kind,
+  }));
+
+  const initialSnapshot: CampusSnapshot = { resources, bookings, maintenance, auditLogs, notifications };
   return <CampusFlowApp profile={profile} institutionName={institutionName} initialSnapshot={initialSnapshot} />;
 }

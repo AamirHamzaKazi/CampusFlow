@@ -336,7 +336,7 @@ export const mockAuditLogs: AuditLogEntry[] = [
     action: 'LOCK_ACQUIRED',
     resourceName: 'Turing Computer Lab 1',
     details: 'Acquired pessimistic row lock on slot [2026-10-02 14:00 - 16:00] for ACM Club reservation.',
-    transactionHash: '0x8f2d...c941',
+    eventId: 'demo-event-003',
   },
   {
     id: 'log-02',
@@ -346,7 +346,7 @@ export const mockAuditLogs: AuditLogEntry[] = [
     action: 'CONFLICT_PREVENTED',
     resourceName: 'Newton Grand Auditorium',
     details: 'Prevented double-booking attempt by Drama Society during Dean Keynote (10:00-13:00). Suggested Seminar Room B alternative.',
-    transactionHash: '0x4e1a...7b12',
+    eventId: 'demo-event-004',
   },
   {
     id: 'log-03',
@@ -356,7 +356,7 @@ export const mockAuditLogs: AuditLogEntry[] = [
     action: 'QR_CHECKIN',
     resourceName: 'Turing Computer Lab 1',
     details: 'Verified QR door scan entry. Reservation bk-901 marked as checked_in.',
-    transactionHash: '0x3c99...aa04',
+    eventId: 'demo-event-005',
   },
   {
     id: 'log-04',
@@ -366,7 +366,7 @@ export const mockAuditLogs: AuditLogEntry[] = [
     action: 'MAINTENANCE_SCHEDULED',
     resourceName: 'Robotics & IoT Workshop',
     details: 'Applied maintenance lock window from 08:00 to 17:00. All conflicting reservation attempts auto-rerouted.',
-    transactionHash: '0x19bb...ee78',
+    eventId: 'demo-event-006',
   },
 ];
 
