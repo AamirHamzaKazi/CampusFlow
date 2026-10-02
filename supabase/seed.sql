@@ -1,0 +1,20 @@
+insert into public.resources (
+  id, institution_id, name, code, type, building, floor, capacity, facilities,
+  opens_at, closes_at, status, requires_approval, approval_role,
+  max_booking_hours, utilization_rate, description
+)
+values
+  ('20000000-0000-4000-8000-000000000101', '10000000-0000-4000-8000-000000000001', 'Turing Computer Lab 1', 'CL-101', 'computer_lab', 'Engineering Block A', 'Floor 1', 60, array['60x Workstations', '4K Projector', 'Dual Audio Mics', 'Gigabit LAN', 'High-Speed AC'], '08:00', '21:00', 'available', true, 'facility_manager', 4, 0, 'Premier computer science lab equipped with high-performance Linux developer machines.'),
+  ('20000000-0000-4000-8000-000000000102', '10000000-0000-4000-8000-000000000001', 'Ada Lovelace AI Lab', 'AI-202', 'specialized_lab', 'Engineering Block A', 'Floor 2', 45, array['45x RTX 4090 GPUs', 'Interactive Smartboard', 'Telepresence Rig', 'High-Speed AC'], '08:00', '22:00', 'available', true, 'department_head', 6, 0, 'Deep learning research facility with specialized GPU compute clusters for model training.'),
+  ('20000000-0000-4000-8000-000000000103', '10000000-0000-4000-8000-000000000001', 'Newton Grand Auditorium', 'AUD-01', 'auditorium', 'Central Concourse', 'Ground Floor', 350, array['350 Seats', 'Cinema 4K Projection', 'Surround Sound', 'Stage Lighting', 'Live Stream Rig', 'Green Room'], '07:30', '23:00', 'available', true, 'institution_admin', 8, 0, 'Flagship campus auditorium for conferences, keynotes, hackathons, and university ceremonies.'),
+  ('20000000-0000-4000-8000-000000000104', '10000000-0000-4000-8000-000000000001', 'Lecture Hall 104 (Tiered)', 'LH-104', 'classroom', 'Science & Math Block', 'Floor 1', 120, array['Tiered Amphitheater Seating', 'Dual Projectors', 'Wireless Mic', 'Document Camera'], '08:00', '20:00', 'available', false, null, 3, 0, 'Tiered academic lecture theater ideal for mid-sized lectures and departmental presentations.'),
+  ('20000000-0000-4000-8000-000000000105', '10000000-0000-4000-8000-000000000001', 'Seminar Room B (Executive)', 'SEM-02', 'seminar_hall', 'Management Tower', 'Floor 4', 35, array['Conference Table', '75-inch 4K Smart Display', 'Hybrid Zoom Room Mics', 'Coffee Station'], '08:30', '19:00', 'available', true, 'department_head', 4, 0, 'Executive round-table conference space for defense committees, guest talks, and faculty meetings.'),
+  ('20000000-0000-4000-8000-000000000106', '10000000-0000-4000-8000-000000000001', 'Robotics & IoT Workshop', 'ROB-301', 'specialized_lab', 'Innovation Hub', 'Floor 3', 30, array['3D Printers', 'Oscilloscopes', 'Soldering Stations', 'Robotic Arms', 'Safety Fume Hoods'], '08:00', '20:00', 'available', true, 'facility_manager', 4, 0, 'Hardware prototyping facility currently under scheduled calibration.'),
+  ('20000000-0000-4000-8000-000000000107', '10000000-0000-4000-8000-000000000001', 'Main Indoor Sports Arena', 'SPT-01', 'sports_facility', 'Athletic Center', 'Ground Floor', 200, array['Badminton Courts (x4)', 'Basketball Court', 'Scoreboard', 'Locker Rooms', 'Bleachers'], '06:00', '22:00', 'available', true, 'facility_manager', 3, 0, 'Multi-sport indoor court for intramural matches, club practices, and sports events.'),
+  ('20000000-0000-4000-8000-000000000108', '10000000-0000-4000-8000-000000000001', 'Study Pod Alpha (Quiet Room)', 'POD-A', 'meeting_room', 'Central Library', 'Floor 2', 8, array['Acoustic Soundproofing', 'Whiteboard Wall', 'TV Monitor', 'Power Outlets'], '08:00', '23:00', 'available', false, null, 2, 0, 'Collaborative student study pod with sound insulation for team sprints and group projects.')
+on conflict (institution_id, code) do update set
+  name = excluded.name, type = excluded.type, building = excluded.building, floor = excluded.floor,
+  capacity = excluded.capacity, facilities = excluded.facilities, opens_at = excluded.opens_at,
+  closes_at = excluded.closes_at, requires_approval = excluded.requires_approval,
+  approval_role = excluded.approval_role, max_booking_hours = excluded.max_booking_hours,
+  description = excluded.description, updated_at = now();
