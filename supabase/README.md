@@ -21,7 +21,9 @@ Run these files in the Supabase SQL Editor, in order:
 
 Then create the first Auth user in **Authentication → Users**. Run `supabase/bootstrap_first_admin.sql` after replacing `REPLACE_WITH_ADMIN_EMAIL` with that user’s exact email. This grants the first `institution_admin` profile for the seeded pilot institution. Keep this bootstrap script restricted to trusted project owners; normal role assignment happens through authenticated admin invitations.
 
-In **Authentication → URL Configuration**, allow the local app callback URL (`http://localhost:3000/auth/callback`) and the equivalent deployed URL before sending invites. Invitations link to `/auth/callback?next=/auth/set-password`.
+In **Authentication → URL Configuration**, allow the local invitation return URL (`http://localhost:3000/auth/complete`) and the equivalent deployed URL before sending invites. CampusFlow supports Supabase's default invitation email; custom SMTP is only needed if you want to customize email delivery/templates or send more than the built-in limit of 2 emails per hour. The browser completion page reads the one-time session tokens from the email redirect, stores the session, and opens `/auth/set-password`.
+
+If an invitation expires and sending it again reports that the email is already registered, check **Authentication → Users**. For a test account that is still unconfirmed, remove that specific pending test user before inviting again. Do not remove a confirmed or in-use account; have that person sign in or use the account recovery flow instead. The app reports this distinction in the invitation error.
 
 ## What is protected
 
